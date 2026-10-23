@@ -1,5 +1,5 @@
 # `zap build --target linux-arm64`: AArch64 code in a static ELF for Linux on arm64, run on the arm64
-# machine ZAP_BENCH_HOST names over ssh, the program handed to it on stdin and
+# machine arm64 in ZAP_SETUP names over ssh, the program handed to it on stdin and
 # taken away after the run. Skipped, with a line on stderr, where no such machine answers.
 
 import fs
@@ -8,7 +8,7 @@ armHost = benchHost()
 
 # why the tests are skipped when they are
 fn armSkipped():
-	if armHost == "": return "skipped: no arm64 machine (ZAP_BENCH_HOST names none)"
+	if armHost == "": return "skipped: no arm64 machine (arm64 in ZAP_SETUP names none)"
 	"skipped: no arm64 machine answers over ssh at {armHost}"
 
 armRuns = armHost != "" and

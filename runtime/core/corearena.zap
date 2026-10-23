@@ -171,7 +171,7 @@ fn arenaResume():
 		__st64(h + 2160, __ld64(h + 2160) - 1)
 
 # ---------- checked runs ----------
-# With ZAP_TRACE=memcheck (every test) each block gets pages of its own, never handed out again:
+# With ZAP_RUN=memcheck (every test) each block gets pages of its own, never handed out again:
 # freeing it decommits them, so a later use of it (through a reference, a window or a copy of
 # its address) faults at once, however long after. The pages come from one reservation
 # (slot 63): its head holds the next free page and a byte per page, 1 where a block starts

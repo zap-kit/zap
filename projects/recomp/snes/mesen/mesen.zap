@@ -22,7 +22,7 @@ pub fn mesenPath() str:
 # Mesen 2 reads a coprocessor's firmware from its own folder only: the firmware files beside the
 # dump (tools/gather.zap's) are copied there, so the project's folder stays the one source.
 fn giveFirmware(romPath str):
-	folder = "{env.get("USERPROFILE") ?? ""}/Documents/Mesen2/Firmware"
+	folder = "{fs.userDir()}/Documents/Mesen2/Firmware"
 	dir = fs.dirOf(romPath)
 	for name in fs.list(dir) ?? []:
 		if not name.endsWith(".rom"): continue

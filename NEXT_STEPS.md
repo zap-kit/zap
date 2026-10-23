@@ -38,7 +38,7 @@
   zap-engine and zap-projects). A new problem comes with its C, C++ and Rust programs, its rule and
   its sizes, five at a time, under 1.00x before it is done.
 - **Measuring.** Tests run on this machine; performance is measured on the arm64 host over ssh
-  (`ZAP_BENCH_HOST` naming it in the user's environment),
+  (`arm64` in ZAP_SETUP naming it in the user's environment),
   arm64 Linux, a production site beside it: the runner keeps every run there under `nice -n 19`,
   two cores and a memory and time limit. A change is decided by the counters (`--ab`:
   instructions, cycles, cache and branch misses), which a loaded machine does not move, so A/Bs
@@ -109,7 +109,7 @@ machine the build waits on the serial lowering and checking, on a loaded one on 
   while the round's lowering goes on (irpipe.zap: a cold build of recompshape's program 24.5 s to
   18.0 s, of the compiler 20.8 s to 17.3 s, on a loaded machine), so the build now waits on the
   lowering alone: 61 s of a 100 s cold build of recompshape's program on a loaded machine, spread
-  over its 4,089 functions (none over 0.2 s), in 26 rounds. `ZAP_TRACE=lowershared` counts what
+  over its 4,089 functions (none over 0.2 s), in 26 rounds. `ZAP_RUN=lowershared` counts what
   each lowering adds to the shared state: on recompshape's program 4,026 functions (99% of the
   lowering's time) add nothing shared, 4,010 no kept answer either; on the compiler 1,905 of
   4,247 (strings 1,079, call stores 1,529, `reads` 1,023, mayBorrow 757, instances 155). The
@@ -241,7 +241,7 @@ has it, depth stored DONT_CARE, the samples resolved by the pass's resolve attac
 vkCmdResolveImage, which desktops gain too); bloom runs at a quarter of the screen and the eye's
 adaptation is a compute reduce, not a chain of screen passes (these two change the pictures:
 their shots kept with `--update` once looked at). No GPU here is tiled or has lazily allocated
-memory: measured by `ZAP_TRACE=gputime` on the examples and the projects on Android.
+memory: measured by `ZAP_RUN=gputime` on the examples and the projects on Android.
 
 ### 10. GPU-driven drawing
 
@@ -305,7 +305,7 @@ Each to measure (one at a time, A/B) and to fire beyond its benchmark:
   missing twin (LLVM 22): the engine's vec3 and matrix code by the same path as raytrace's.
 - Inlining: the limits stand at 40 nodes for the program's own bodies and for runtime bodies
   called outside a loop in a function with no loop (irlowerfunction.zap), 24 for a runtime body
-  inside a loop. `ZAP_TRACE=irinline` names a body refused for its size.
+  inside a loop. `ZAP_RUN=irinline` names a body refused for its size.
 - The compiler's own time: the ownership pass's snapshots of every variable at each branch
   (`snapshotMoved`); checkEffects' addChanged (effects.zap), quadratic in a body's changed paths,
   8% of a check.

@@ -30,7 +30,7 @@ mut a64Sites A64Site[] = []
 # whether the block being emitted runs before its function's frame is made
 mut a64InLeaf = false
 
-# ZAP_TRACE=a64: the operations AArch64 does not take yet, each a brk in the code
+# ZAP_RUN=a64: the operations AArch64 does not take yet, each a brk in the code
 fn a64Word():
 	TraceWord(
 		"a64",
