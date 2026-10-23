@@ -5,7 +5,7 @@ runtime (`runtime/`), the standard library (`std/`), tools and tests; the engine
 `rhi/`, one GPU API over Vulkan and Direct3D 12) and the programs on it (`projects/`, one dir each;
 `projects/examples/` check an engine feature on either backend). `spec/` is the one spec, one
 `.zap` file a section whose prose is its comments and whose rules are its tests (`zap test spec`
-runs it); `NEXT_STEPS.md` is the plan.
+runs it); `TODO.md` is the plan.
 
 ## DRY: the rule above every other
 

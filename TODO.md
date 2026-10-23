@@ -1,4 +1,4 @@
-# Next steps
+# TODO
 
 ## A. Rules
 
@@ -44,7 +44,7 @@
   instructions, cycles, cache and branch misses), which a loaded machine does not move, so A/Bs
   run side by side; time at the end of a batch, one run at a time under the machine's lock.
 
-## B. Next steps
+## B. Steps
 
 ### State at the stop (every session stopped; everything in main at 9ec8afb2, no other branch)
 
