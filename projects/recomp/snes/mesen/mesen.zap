@@ -8,15 +8,18 @@ import fs
 
 script = "projects/recomp/snes/tools/oracle.lua"
 
-# Mesen's executable: the winget package's, or MESEN in the environment
+fn mesenWord():
+	SetupWord("mesen", "mesen=<path>: Mesen.exe, when it is not the winget package's")
+
+# Mesen's executable: mesen of ZAP_SETUP, else the winget package's
 pub fn mesenPath() str:
-	if env.get("MESEN") is given: return given
+	if mesenWord().value() is given: return given.copy()
 	packages = "{env.get("LOCALAPPDATA") ?? ""}/Microsoft/WinGet/Packages"
 	for name in fs.list(packages) ?? []:
 		if name.startsWith("SourMesen.Mesen2"):
 			exe = "{packages}/{name}/Mesen.exe"
 			if fs.exists(exe): return exe
-	fail("Mesen 2 not found: winget install SourMesen.Mesen2, or MESEN=<path to Mesen.exe>")
+	fail("Mesen 2 not found: winget install SourMesen.Mesen2, or ZAP_SETUP=mesen=<path to Mesen.exe>")
 	""
 
 # Mesen 2 reads a coprocessor's firmware from its own folder only: the firmware files beside the

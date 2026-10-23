@@ -88,6 +88,8 @@ Left:
 5. `x bool?? = true` is refused: a value is wrapped in one optional layer, not two.
 6. The engine's frame-cost changes (step 7: sorted draws, ring sizing, sprite batch, silent
    voices, skinning passes) landed without a `zap test --only shots` run: run it once.
+7. The seeds still know ZAP_RUNTIME, not ZAP_RUN's `runtime=`: compiler/driver/seeds.zap sets it
+   when it builds with a seed. Once the seeds are promoted (`zap build --seeds`), that line goes.
 
 ### 2. Compile time and executable size
 
