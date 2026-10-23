@@ -1,0 +1,191 @@
+# The page's words in each language. The English is the README's; the Portuguese is written for
+# this page. Fields ending in Html are authored here and written out as they are.
+
+pub type Point:
+	lead str
+	restHtml str
+
+pub type Words:
+	lang str
+	otherLang str   # the other language's directory, and its name in its own language
+	otherName str
+	tagline str
+	points Point[]
+	numbers str
+	build str
+	experimental str
+	experimentalText str
+	license str
+	licenseText str
+	links str
+	cellNames {str: str}   # README table cells that read differently here
+	cta str   # the hero's buttons
+	heroNote str
+	statLabels str[]   # one per stats.stats value, in its order
+	why str
+	discoverHeading str   # the section of the prompt that discovers the language
+	copy str
+	copied str
+	built str
+	linesWord str   # after a project's count of lines of Zap
+	highlights {str: str}   # by the README's name of each project, what stands out in it
+	speedChart str   # the charts' headings and words
+	timeChart str
+	memoryChart str
+	tokensChart str
+	sourcesHtml str   # where the problems and the rival programs come from, written out as it is
+	tokensGuide str
+	tie str
+	zapGuide str   # the tokens chart's guide
+	programs Program[]   # what each benchmark program does
+	versus str   # "vs": a chart's rival
+	discoverText str
+	discoverPrompt str
+	sampleComments {str: str} = {}   # the README sample's comment lines and the page's own words for them
+
+# the zap repository, which holds the language, the engine and the projects (this site too)
+pub repoUrl = "https://github.com/zap-works/zap"
+
+engineLink = "<a href=\"{repoUrl}/tree/main/engine\">engine</a>"
+
+# what stands out in each project, in English and in Portuguese, by the README's name of it
+type ProjectNote:
+	name str
+	en str
+	pt str
+
+projectNotes = [
+	ProjectNote("Engine", "Vulkan and Direct3D 12, from 2D to 3D, written in Zap.", "Vulkan e Direct3D 12, do 2D ao 3D, escritos em Zap."),
+	ProjectNote("Mario 64", "17% less CPU a frame than the C port (sm64ex), frame for frame the same game.", "17% menos CPU por quadro que o port em C (sm64ex), quadro a quadro o mesmo jogo."),
+	ProjectNote("Ragnarok", "A modern camera that turns, tilts and zooms around the hero, at 986 fps.", "Câmera moderna que gira, inclina e aproxima em volta do herói, a 986 fps."),
+	ProjectNote("Skyrim", "Riverwood's inn: its meshes, textures, scripts, people and physics, run by Zap.", "A taverna de Riverwood: malhas, texturas, scripts, pessoas e física, rodando em Zap."),
+	ProjectNote("Minecraft", "An endless world made on every core as you walk, at 403 fps with shadows and water.", "Um mundo sem fim gerado em todos os núcleos enquanto você anda, a 403 fps com sombras e água."),
+	ProjectNote("FireRed", "The cartridge's ARM code recompiled into Zap: 337 fps, 5.6x the Game Boy Advance.", "O código ARM do cartucho recompilado para Zap: 337 fps, 5,6x o Game Boy Advance."),
+	ProjectNote("Excel 1.00", "The 1985 Mac written in Zap, running Excel from its original floppy disks.", "O Mac de 1985 escrito em Zap, rodando o Excel dos disquetes originais."),
+	ProjectNote("Skate 3", "The Xbox 360 game rewritten in Zap, at 287 fps.", "O jogo de Xbox 360 reescrito em Zap, a 287 fps."),
+	ProjectNote("Donkey Kong Country", "The SNES cartridge recompiled into Zap, its sound chip included, frame for frame the same as Mesen 2.", "O cartucho de SNES recompilado para Zap, com o chip de som, quadro a quadro igual ao Mesen 2."),
+	ProjectNote("Lemmings", "The 1991 DOS game, frame for frame the same as DOS, on a wider view.", "O jogo de DOS de 1991, quadro a quadro igual ao DOS, numa visão mais larga."),
+	ProjectNote("Prince of Persia", "SDLPoP rewritten in Zap: every level, the music on an OPL3 in Zap, replays frame for frame the same.", "O SDLPoP reescrito em Zap: todos os níveis, a música num OPL3 em Zap, replays quadro a quadro iguais."),
+	ProjectNote(
+		"ZapX",
+		"This site: HTML written inside Zap, its parts as components the way React does.",
+		"Este site: HTML escrito dentro do Zap, em componentes como no React."
+	)
+]
+
+# the notes in English or in Portuguese, by project
+fn notesIn(english bool):
+	notes {str: str} = {}
+	for n in projectNotes:
+		notes[n.name.copy()] = (n.en if english else n.pt).copy()
+	notes
+
+pub fn english() Words:
+	Words(
+		lang = "en",
+		otherLang = "pt",
+		otherName = "Português",
+		tagline = "Python's look, C's speed, Rust's memory management.",
+		points = [
+			Point("Made for agents.", "Fewer tokens per program, errors that say how to fix them."),
+			Point("Efficient by design.", "Lean native code, even on weak devices; recompiled and decompiled games prove it."),
+			Point("Built for data.", "Parallel loops, vectors and tensors are the language itself, not C swept under the rug."),
+			Point("Safe with no ceremony.", "Memory is checked at compile time with nothing written for it: no lifetimes, no annotations, no garbage collector."),
+			Point("CPU and GPU alike.", "A shader is Zap, under the same types and rules; the {engineLink} is built on it."),
+			Point("One tool, no setup.", "<code>zap</code> builds, runs, tests, formats and documents. Straight from code to machine code, no LLVM in between: every optimization in reach."),
+		],
+		numbers = "Numbers",
+		build = "Build",
+		experimental = "Experimental",
+		experimentalText = "A personal project, not fit for production: the language changes often and its history is rewritten at will. Copy it, change it, make dialects of it.",
+		license = "License",
+		licenseText = "MIT.",
+		links = "Source",
+		cellNames = {},
+		cta = "Discover",
+		heroNote = "Windows and Linux, x64 and arm64; builds for Android. Experimental.",
+		statLabels = ["faster than %lang, average of %count benchmarks", "less memory than %lang", "less code than %lang", "for the compiler to build itself"],
+		why = "Why Zap",
+		discoverHeading = "Discover the language",
+		copy = "Copy",
+		copied = "Copied",
+		built = "Built with Zap",
+		linesWord = "lines of Zap",
+		highlights = notesIn(true),
+		speedChart = "Time and memory",
+		timeChart = "Time",
+		memoryChart = "Memory",
+		tokensChart = "Size of the code",
+		sourcesHtml = "The problems are inspired by <a href=\"https://benchmarksgame-team.pages.debian.net/benchmarksgame/\">The Benchmarks Game</a>. One AI agent tuned every language's programs under the same rules: the languages are compared, not their authors.",
+		tokensGuide = "How much code each language needs for the same programs, counted in words and symbols: Zap is 1.00x.",
+		tie = "1.00x = tie",
+		zapGuide = "1.00x = Zap",
+		programs = programsEnglish(),
+		versus = "vs",
+		discoverText = "Paste this into your coding agent to learn what is interesting in the language:",
+		discoverPrompt = "Study the Zap language at https://github.com/zap-works/zap (its README and spec/) and show me, with short examples, what it does differently from C, Rust and Python.",
+	)
+
+pub fn portuguese() Words:
+	Words(
+		lang = "pt",
+		otherLang = "en",
+		otherName = "English",
+		tagline = "A cara do Python, a velocidade do C, a gestão de memória do Rust.",
+		points = [
+			Point("Feito para agentes.", "Menos tokens por programa e erros que dizem como corrigir."),
+			Point("Eficiente por natureza.", "Código nativo enxuto, até em dispositivos fracos; jogos recompilados e decompilados provam isso."),
+			Point("Pensado para dados.", "Laços paralelos, vetores e tensores são a própria linguagem, não C escondido debaixo do tapete."),
+			Point("Seguro sem cerimônia.", "A memória é verificada em tempo de compilação sem que você escreva nada para isso: sem lifetimes, sem anotações, sem coletor de lixo."),
+			Point("CPU e GPU do mesmo jeito.", "Um shader é Zap, com os mesmos tipos e regras; a {engineLink} é construída sobre isso."),
+			Point("Uma ferramenta, sem configuração.", "O <code>zap</code> compila, executa, testa, formata e documenta. Direto do código ao código de máquina, sem LLVM no meio: toda otimização ao alcance."),
+		],
+		numbers = "Números",
+		build = "Compilar",
+		experimental = "Experimental",
+		experimentalText = "Um projeto pessoal, não é para produção: a linguagem muda com frequência e a história dela é reescrita à vontade. Copie, mude, faça dialetos dela.",
+		license = "Licença",
+		licenseText = "MIT.",
+		links = "Código-fonte",
+		cellNames = {
+			"tokens": "tokens",
+			"Zap against": "Zap contra",
+			"time C": "tempo C",
+			"memory C": "memória C",
+			"vs Zap": "contra o Zap",
+			"worst": "pior",
+			"geomean": "média geométrica",
+			"Built with Zap": "Feito com Zap",
+			"lines of Zap": "linhas de Zap",
+			"The compiler": "O compilador",
+			"builds itself in": "compila a si mesmo em"
+		},
+		cta = "Descobrir",
+		heroNote = "Windows e Linux, x64 e arm64; compila para Android. Experimental.",
+		statLabels = ["mais rápido que o %lang, média de %count benchmarks", "menos memória que o %lang", "menos código que o %lang", "para o compilador compilar a si mesmo"],
+		why = "Por que Zap",
+		discoverHeading = "Descobrir a linguagem",
+		copy = "Copiar",
+		copied = "Copiado",
+		built = "Feito com Zap",
+		linesWord = "linhas de Zap",
+		highlights = notesIn(false),
+		speedChart = "Tempo e memória",
+		timeChart = "Tempo",
+		memoryChart = "Memória",
+		tokensChart = "Tamanho do código",
+		sourcesHtml = "Os problemas são inspirados no <a href=\"https://benchmarksgame-team.pages.debian.net/benchmarksgame/\">The Benchmarks Game</a>. Um mesmo agente de IA otimizou os programas de todas as linguagens com as mesmas regras: compara-se a linguagem, não quem programou.",
+		tokensGuide = "Quanto código cada linguagem precisa para os mesmos programas, contado em palavras e símbolos: o Zap é 1,00x.",
+		tie = "1,00x = empate",
+		zapGuide = "1,00x = Zap",
+		programs = programsPortuguese(),
+		versus = "contra",
+		discoverText = "Cole isto no seu agente de código para saber o que há de interessante na linguagem:",
+		discoverPrompt = "Estude a linguagem Zap em https://github.com/zap-works/zap (o README e a pasta spec/) e me mostre, com exemplos curtos, o que ela faz diferente de C, Rust e Python.",
+		sampleComments = {
+			"# on every core at once: the strong ones, strongest": "# em todos os núcleos de uma vez: os fortes, os mais fortes",
+			"# first, grouped by kind, and each kind's power": "# primeiro, agrupados por tipo, e o poder de cada tipo",
+			"# memory checked when compiling, nothing written for it": "# memória verificada ao compilar, sem nada escrito para isso",
+			"# error: cannot change 'team' while 'leader' borrows it": "# erro: não pode mudar 'team' enquanto 'leader' o empresta"
+		},
+	)

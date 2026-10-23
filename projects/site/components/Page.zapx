@@ -1,0 +1,32 @@
+import content
+
+pub fn Page(data content.PageData) Node:
+	<html lang={data.words.lang}>
+		<head>
+			<Head up="../" />
+			<meta name="description" content={data.words.tagline}>
+			<link rel="alternate" hreflang={data.words.otherLang} href="../{data.words.otherLang}/index.html">
+			<link rel="preconnect" href="https://fonts.googleapis.com">
+			<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+			<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=IBM+Plex+Sans:wght@400;600&family=JetBrains+Mono:wght@400;600&display=swap">
+			<link rel="stylesheet" href="../style.css">
+		</head>
+		<body>
+			<Nav up="../" otherLang={data.words.otherLang} otherName={data.words.otherName} />
+			<div class="wrap">
+				<Hero words={data.words} />
+				<Stats words={data.words} stats={data.stats} />
+				<Points why={data.words.why} points={data.words.points} sampleHtml={data.sampleHtml} />
+				<section class="reveal" id="discover">
+					<h2>{data.words.discoverHeading}</h2>
+					{for box in data.boxes:
+						<CopyBox box={box} copy={data.words.copy} copied={data.words.copied} />
+					}
+				</section>
+				<Numbers words={data.words} blocks={data.blocks} />
+				<Built heading={data.words.built} cards={data.cards} />
+				<Footer words={data.words} />
+			</div>
+			<script>{raw(data.script)}</script>
+		</body>
+	</html>

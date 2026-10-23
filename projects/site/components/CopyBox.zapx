@@ -1,0 +1,10 @@
+import content
+
+fn CopyBox(box content.CopyBox, copy str, copied str):
+	<>
+		<p>{box.text}</p>
+		<div class="copybox">
+			<pre id={box.promptId}>{box.prompt}</pre>
+			<button type="button" data-copy={box.promptId} data-done={copied}>{copy}</button>
+		</div>
+	</>

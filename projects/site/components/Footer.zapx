@@ -1,0 +1,7 @@
+import content
+
+fn Footer(words content.Words):
+	<footer>
+		<p><strong>{words.experimental}.</strong> {words.experimentalText}</p>
+		<p>{words.license}: {words.licenseText} · {words.links}: <a href={content.repoUrl}>zap</a> · <a href="{content.repoUrl}/tree/main/engine">engine</a> · <a href="{content.repoUrl}/tree/main/projects">projects</a></p>
+	</footer>

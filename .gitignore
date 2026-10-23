@@ -1,0 +1,61 @@
+build/
+*.exe
+*.map
+
+# Super Mario 64: the cartridge dump is your own and never committed, nor anything taken from it
+projects/mario/rom/
+*.z64
+*.n64
+*.v64
+
+# Ragnarok Online: extracted from your own install, never committed
+projects/ragnarok/assets/
+
+# The PC port of Super Mario 64 (projects/mario/bench/README.md), built from your own ROM
+projects/mario/bench/pc/
+
+# Skate 3: the disc image is your own and never committed, nor anything taken from it
+projects/skate3/disc/
+projects/skate3/assets/
+*.iso
+*.xex
+
+# Pokemon FireRed: the cartridge dump is your own and never committed, nor the code recompiled from it
+projects/firered/rom/
+projects/firered/recomp/
+projects/firered/assets/
+*.gba
+*.sav
+
+# Microsoft Excel 1.00: the disk images are your own and never committed, nor anything made from them
+projects/excel1/disks/
+projects/excel1/recomp/
+projects/excel1/assets/
+*.moof
+*.a2r
+
+# AI models: the weights and datasets are downloaded, never committed
+projects/ai/data/
+projects/site/out/
+projects/skyrim/assets/
+
+# Lemmings: the DOS game's files are your own and never committed, nor anything taken from them
+projects/lemmings/assets/
+
+# Donkey Kong Country: the cartridge dump is your own and never committed, nor anything taken from it
+projects/dkc/rom/
+projects/dkc/recomp/
+projects/dkc/assets/
+projects/dkc/reference/
+*.sfc
+*.smc
+
+# Prince of Persia: the DOS game's files are your own and never committed, nor anything taken from them
+projects/pop/assets/
+
+# a tool run from projects/skyrim once wrote its prepared assets here
+projects/skyrim/projects/
+
+# recomp.snes: the cartridges it is tried on are your own and never committed, nor what is recompiled from them
+projects/recomp/snes/rom/
+projects/recomp/snes/out/

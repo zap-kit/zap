@@ -1,0 +1,101 @@
+{
+  "name": "zap-lang",
+  "displayName": "Zap",
+  "description": "Zap: the language server (colours, outline, symbols, go to definition, references, hover, formatting, errors on save)",
+  "version": "0.9.3",
+  "publisher": "zap",
+  "engines": {
+    "vscode": "^1.91.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "contributes": {
+    "languages": [
+      {
+        "id": "zap",
+        "aliases": [
+          "Zap",
+          "zap"
+        ],
+        "extensions": [
+          ".zap"
+        ],
+        "configuration": "./language-configuration.json",
+        "icon": {
+          "light": "./icons/zap.svg",
+          "dark": "./icons/zap.svg"
+        }
+      },
+      {
+        "id": "zapx",
+        "aliases": [
+          "ZapX",
+          "zapx"
+        ],
+        "extensions": [
+          ".zapx"
+        ],
+        "configuration": "./language-configuration.json",
+        "icon": {
+          "light": "./icons/zap.svg",
+          "dark": "./icons/zap.svg"
+        }
+      }
+    ],
+    "grammars": [
+      {
+        "language": "zap",
+        "scopeName": "source.zap",
+        "path": "./syntaxes/zap.tmLanguage.json"
+      },
+      {
+        "language": "zapx",
+        "scopeName": "source.zapx",
+        "path": "./syntaxes/zapx.tmLanguage.json",
+        "embeddedLanguages": {
+          "meta.embedded.zap": "zap"
+        }
+      }
+    ],
+    "configurationDefaults": {
+      "[zap]": {
+        "editor.insertSpaces": false,
+        "editor.tabSize": 4,
+        "editor.detectIndentation": false,
+        "editor.formatOnSave": true
+      },
+      "[zapx]": {
+        "editor.insertSpaces": false,
+        "editor.tabSize": 4,
+        "editor.detectIndentation": false,
+        "editor.formatOnSave": true
+      }
+    },
+    "commands": [
+      {
+        "command": "zap.restartServer",
+        "title": "Zap: Restart Language Server"
+      }
+    ],
+    "configuration": {
+      "title": "Zap",
+      "properties": {
+        "zap.compilerPath": {
+          "type": "string",
+          "default": "",
+          "description": "The zap compiler the language server comes from (default: build/zap.exe of the zap repository: the workspace itself, its zap folder, or ../zap). The server restarts when this file changes."
+        },
+        "zap.runtimePath": {
+          "type": "string",
+          "default": "",
+          "description": "The runtime sources (default: the runtime folder beside the compiler's folder)."
+        }
+      }
+    }
+  },
+  "main": "./extension.js",
+  "activationEvents": [
+    "onLanguage:zap"
+  ]
+}

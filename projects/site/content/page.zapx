@@ -1,0 +1,40 @@
+# What the page's components read: the words and the README's numbers as plain data.
+
+import readme
+
+# a prompt to paste into the user's coding agent, with the line that introduces it and a button
+# that copies it
+pub type CopyBox:
+	promptId str
+	text str
+	prompt str
+
+pub type PageData:
+	words Words
+	sampleHtml str
+	stats Stat[]
+	boxes CopyBox[]
+	blocks Block[]
+	cards Card[]
+	script str
+
+fn copybox(promptId str, intro str, prompt str):
+	CopyBox(promptId = promptId.copy(), text = intro.copy(), prompt = prompt.copy())
+
+# the README's sample with its comments in the page's language
+fn sampleIn(words Words, sample str):
+	sample.lines().map((words.sampleComments.get(it) ?? it).copy()).join("\n")
+
+pub fn pageData(words Words, source readme.Readme) PageData:
+	PageData(
+		words = words.copy(),
+		sampleHtml = highlight(words.sampleIn(source.sample)),
+		stats = source.stats(words.statLabels),
+		boxes = [copybox("discoverPrompt", words.discoverText, words.discoverPrompt)],
+		blocks = words.blocks(source),
+		cards = words.cards(source),
+		script = script.copy()
+	)
+
+# The root page's script: sends the browser to its language.
+pub redirectScript = "location.replace(/^pt/i.test(navigator.language || \"\") ? \"pt/index.html\" : \"en/index.html\");"

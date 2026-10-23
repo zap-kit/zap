@@ -1,0 +1,11 @@
+{
+  "note": "captured from SkyrimSE.exe at 1280x960, first person, fov 65 65, menus hidden (tm); capture names the RenderDoc capture's final presented frame (C:/tools/skyrim-rdc, exported by analysis/finals.py) when it exists, else the pose's PNG; x, y, z the player's feet (player.getpos, z once settled), yaw and pitch Skyrim's angles z and x in degrees (pitch positive looks down); eye the camera's height over the feet; mask rectangles (x, y, w, h in pixels) left out of the comparison",
+  "poses": [
+    {"name": "start", "dimmers": [0.7809, 0.0, 0.0, 0.8872, 0.8684, 1.0, 1.0, 0.0], "jitter": 8, "capture": "start-final", "x": 8, "y": -170, "z": 0.35, "yaw": 288.1, "pitch": 14.4, "fov": 65, "eye": 120.5, "mask": [500, 180, 300, 220]},
+    {"name": "bar", "dimmers": [0.8958, 0.0, 0.0, 0.7861, 0.0, 0.0, 0.0, 0.0], "jitter": 1, "capture": "bar-final", "x": -780, "y": -60, "z": 0.35, "yaw": 270, "pitch": 5, "fov": 65, "eye": 120.5, "mask": []},
+    {"name": "firepit", "dimmers": [0.8138, 1.0, 0.0, 0.0, 0.8821, 1.0, 1.0, 0.0], "jitter": 3, "capture": "firepit-final", "captureAt": [-500, -335, 63.35], "x": -488.5, "y": -331.5, "z": 0.35, "yaw": 0, "pitch": 20, "fov": 65, "eye": 120.5, "mask": [120, 180, 860, 180]},
+    {"name": "table", "dimmers": [0.7781, 0.8777, 0.0, 0.0, 0.8437, 0.0, 0.8107, 0.0], "jitter": 7, "capture": "table-final", "x": -258, "y": 170, "z": 0.35, "yaw": 0, "pitch": 15, "fov": 65, "eye": 120.5, "mask": []},
+    {"name": "backroom", "dimmers": [0.0, 0.0, 0.8571, 0.0, 0.0, 0.0, 0.0, 0.8312], "jitter": 7, "capture": "backroom-final", "x": -1024, "y": -520, "z": 0.35, "yaw": 180, "pitch": 0, "fov": 65, "eye": 120.5, "mask": []},
+    {"name": "pelt", "dimmers": [0.8231, 0.7743, 0.0, 0.0, 0.7652, 0.0, 0.8037, 0.0], "jitter": 2, "capture": "pelt-final", "x": -266, "y": -50, "z": 0.35, "yaw": 0, "pitch": -5, "fov": 65, "eye": 120.5, "mask": []}
+  ]
+}

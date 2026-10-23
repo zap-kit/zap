@@ -1,0 +1,8 @@
+[package]
+name = "binarytrees"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+bumpalo = "3.20.3"
+rayon = "1.12.0"

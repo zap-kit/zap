@@ -1,0 +1,185 @@
+# 7.11 Markup: `.zapx`
+#
+# A `.zapx` file is Zap with HTML in it, as JSX is JavaScript with it: where an expression starts
+# (not after a value, where `<` compares or opens type arguments), a `<` before a name or `>`
+# begins markup, an expression whose value is a `Node` (std/zapx). A `.zap` file has no
+# markup. A `.zapx` file has `zapx` without importing it, its names bare as if the file began with
+# `from zapx import Node, raw, render, ...` (its own declarations and imports win over them; a
+# `.zap` file imports it as any module), and `node.render()` writes a node as
+# HTML: text and attribute values escaped, a void element (`br`, `img`, `input`, `meta`...) with
+# no closing tag, and a page, an `html` element at the root, after its doctype.
+#
+# An element is written `<tag attributes>children</tag>`, or `<tag attributes />` without
+# children; a void element may end with its tag (`<br>`). An attribute is a name alone (on, written
+# bare), a name with a string (`class="stat {kind}"`, interpolated as any string) or a name with a
+# value in braces (`data-count={n}`): a `str`, a number (its text) or a `bool` (written bare when
+# true, left out when false). `<>children</>` is a fragment: its children with nothing around them.
+#
+# Text between tags is kept as written within a line; across lines each line's indentation and
+# trailing blanks go, blank lines go, and the lines are joined by one space, so laying the markup
+# out changes no text. Text is its characters (`&` is written `&amp;` by render); a `{` in it
+# opens a value and a lone `}` is an error.
+
+import fs
+
+fn greeting(name str):
+	<p class="hello">Hello, <b>{name}</b>!</p>
+
+test "an element, its attributes and its text":
+	print(greeting("Ana & Bo").render())
+	print(<div id="x" data-count={3} hidden translate={false}><br><img src="a.png" /></div>.render())
+	print(
+		<p>
+			one
+			two   three
+		</p>.render()
+	)
+	prints """
+		<p class="hello">Hello, <b>Ana &amp; Bo</b>!</p>
+		<div id="x" data-count="3" hidden><br><img src="a.png"></div>
+		<p>one two   three</p>
+		"""
+
+test "a page renders after its doctype":
+	page = <html><head><title>T</title></head><body /></html>
+	print(page.render())
+	prints "<!DOCTYPE html><html><head><title>T</title></head><body></body></html>"
+
+# Inside braces between tags is any Zap expression, its value a child: a `Node` itself
+# (moved in, as any value given to a place: `children.copy()` keeps it), a list of nodes (a
+# fragment of them), a `str` (text) or a number (its text). `raw(html)` is HTML written as
+# it is. A `for` and an `if` in braces are values there: `{for x in xs: body}` is
+# `xs.map(x: body)`, a child for each element of a list, a range or a pipeline;
+# `{if c: a}` is `a` or nothing, with `elif`, `else` and a condition as in a statement (`if user
+# is name:` binds name). Their body is on the line after the `:` or in a block below it, whose
+# last expression is the child.
+
+test "values, lists, loops and conditions as children":
+	names = ["a", "b"]
+	n = 2
+	print(<ul>{names.map(<li>{it}</li>)}{n * 1.5}{raw("<hr>")}</ul>.render())
+	print(
+		<ol>
+			{for i in 0..n:
+				label = names[i].upper()
+				<li value={i}>{label}</li>
+			}
+		</ol>.render()
+	)
+	for admin in [true, false]:
+		user str? = "ana" if admin else none
+		print(
+			<nav>
+				{if admin: <a href="/admin">admin</a>}
+				{if user is u and u != "": <i>{u}</i>}
+				{if admin:
+					<b>on</b>
+				elif n > 5:
+					<i>many</i>
+				else:
+					"off"
+				}
+			</nav>.render()
+		)
+	print(<><b>1</b>{"<2>"}</>.render())
+	prints """
+		<ul><li>a</li><li>b</li>3<hr></ul>
+		<ol><li value="0">A</li><li value="1">B</li></ol>
+		<nav><a href="/admin">admin</a><i>ana</i><b>on</b></nav>
+		<nav>off</nav>
+		<b>1</b>&lt;2&gt;
+		"""
+
+# A tag with a capital letter is a component: a function giving a `Node`, of the file or of
+# an imported module (`<ui.Card>`), whose name a .zapx file may start with a capital.
+# `<Stat s={x} label="hp" />` is the call `Stat(s = x, label = "hp")`: each attribute a named
+# argument, a bare one `true`, and the content between its tags the argument `children`, a
+# fragment, which the function takes as a parameter of that name (`move children Node` to
+# place it in its result).
+
+type Score:
+	name str
+	points i64
+
+fn Stat(s Score, wide bool = false):
+	<div class={"stat wide" if wide else "stat"}><b>{s.points}</b> {s.name}</div>
+
+fn Card(title str, move children Node):
+	<section>
+		<h2>{title}</h2>
+		{children}
+	</section>
+
+test "a component is a function and its attributes are its arguments":
+	scores = [Score("hp", 10), Score("mp", 3)]
+	print(
+		<Card title="Stats">
+			{for s in scores:
+				<Stat s={s} wide={s.points > 5} />
+			}
+		</Card>.render()
+	)
+	print(<Stat s={scores[1]} wide />.render())
+	prints """
+		<section><h2>Stats</h2><div class="stat wide"><b>10</b> hp</div><div class="stat"><b>3</b> mp</div></section>
+		<div class="stat wide"><b>3</b> mp</div>
+		"""
+
+# `zap fmt` (13.1.2) lays markup out by its nesting: a line that starts inside markup stands one
+# tab past the line its innermost open part started on (a tag, an element's children, a `{...}` of
+# code, a block that code opens past its first), a line closing that part with it; a line holding
+# markup keeps its text as written, and none is broken.
+
+test "markup laid out by its nesting, once":
+	messy = "fn page(xs str[]) Node:\n\t<div class=\"a\"\nid=\"b\">\n<p>don't  s: s.x</p>\n\t\t\t\{for x in xs:\n<b>\{x}</b>\n}\n</div>\n"
+	file = "{testDir()}page.zapx"
+	_ = fs.writeFile(file, messy)
+	Process.output("{zapPath()} fmt {file}")
+	once = fs.readFile(file) ?? ""
+	Process.output("{zapPath()} fmt {file}")
+	expect (fs.readFile(file) ?? "") == once
+	_ = fs.deleteFile(file)
+	print(once.trimmed().replace("\t", ">"))
+	prints r"""
+		fn page(xs str[]) Node:
+		><div class="a"
+		>>id="b">
+		>><p>don't  s: s.x</p>
+		>>{for x in xs:
+		>>><b>{x}</b>
+		>>}
+		></div>
+		"""
+
+test "a markup if takes a condition joined by or":
+	a = ""
+	b = "x"
+	print(<p>{if a.isEmpty or not b.isEmpty: <i>yes</i>}{if a == "" and b == "": <b>no</b>}</p>.render())
+	prints "<p><i>yes</i></p>"
+
+# Errors are at their line: a tag never closed or closed by another, an attribute given twice or
+# with a value neither a string nor braced, a child or an attribute of a type markup does not take,
+# an unknown component, and a component's argument as any call's.
+
+test "a closing tag names the element open" refuses MarkupMismatch("</div> closes <b>, opened at line"):
+	x = <div><b>a</div>
+	print(x.render())
+
+test "a child is a node, a list of them, text or a number" refuses MarkupChildType("not bool"):
+	print(<p>{true}</p>.render())
+
+test "a markup for binds one name" refuses MarkupForName:
+	print(<ul>{for i, x in [1]: <li>{x}</li>}</ul>.render())
+
+test "a component is a function" refuses UnknownFunction("unknown function 'Missing'"):
+	print(<Missing a="1" />.render())
+
+test "a component's attributes are its parameters" refuses NoParameter("Stat has no parameter 'size'"):
+	type Score:
+		name str
+		points i64
+
+	fn Stat(s Score) Node:
+		<b>{s.name}</b>
+
+	print(<Stat s={Score("a", 1)} size="2" />.render())

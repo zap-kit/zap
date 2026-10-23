@@ -1,0 +1,57 @@
+# What the site takes from the zap repository at build time: the README's two code blocks and the
+# numbers of numbers.json (which `zap test --only bench --full` writes and the README's tables are
+# made from). Nothing of it is copied into the site's sources.
+
+import fs
+
+pub type Numbers:
+	name str
+	rows (str[])[]   # the header first; cells as written, links still `[text](url)`
+
+pub type Readme:
+	sample str   # the first code block: the language at a glance
+	build str   # the second: the commands
+	tables Numbers[]
+
+# The text of the code blocks, in order.
+fn codeBlocks(text str):
+	blocks = []
+	current str[] = []
+	inside = false
+	for line in text.lines():
+		if line.startsWith("```"):
+			if inside: blocks.push(current.join("\n"))
+			current = []
+			inside = not inside
+		elif inside:
+			current.push(line.copy())
+	blocks
+
+# numbers.json as zap writes it
+type NumbersTable:
+	name str
+	header str[]
+	rows (str[])[]
+
+type NumbersFile:
+	tables NumbersTable[]
+
+fn tablesOf(file NumbersFile):
+	file.tables.map(t:
+		rows = [t.header.copy()]
+		rows.extend(t.rows.copy())
+		Numbers(name = t.name.copy(), rows)
+	)
+
+# the README and numbers.json of the zap repository at `repo`
+pub fn read(repo str) Readme ? str:
+	path = "{repo}/README.md"
+	text = fs.readFile(path) ?? return "cannot read {path}: {error}"
+	blocks = codeBlocks(text)
+	if blocks.len < 2: return "{path} needs its sample and its build commands as code blocks"
+	json = fs.readFile("{repo}/baselines/numbers.json") ??
+		return "cannot read {repo}/baselines/numbers.json: {error}"
+	file = NumbersFile.fromJson(json) ?? return "{repo}/numbers.json is not tables of rows"
+	found = file.tablesOf()
+	if found.isEmpty: return "{repo}/numbers.json has no tables"
+	Readme(sample = blocks[0].copy(), build = blocks[1].copy(), tables = found)

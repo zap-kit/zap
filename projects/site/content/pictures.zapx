@@ -1,0 +1,86 @@
+# The charts as SVG pictures, for the README (written beside the pages, charts/<name>.svg): the
+# same rows as the page's charts, a name, its bars on their track and their values, the tie's
+# dashed line, the legend above; the text follows the reader's light or dark theme.
+
+padding = 14.0
+nameWidth = 150.0
+trackWidth = 520.0
+valueWidth = 70.0
+keysHeight = 24.0
+barGap = 2.0
+
+# the share a width written as a percentage ("73.2%") stands for
+fn share(width str):
+	(f64.parse(width.replace("%", "")) ?? 0.0) / 100.0
+
+pictureStyle = r"""
+	<style>
+	.bg { fill: #fbfbfd; } text { fill: #14161f; } .track { fill: #e3e4ea; } .bar, .swatch { fill: #ffd21f; } .muted { fill: #a9adbb; }
+	.bar.memory, .swatch.memory, tspan.memory { fill: #4f7bd9; } .bar.loss, tspan.loss { fill: #c2362f; }
+	.tie { stroke: #5c6070; stroke-dasharray: 3 3; }
+	@media (prefers-color-scheme: dark) {
+	.bg { fill: #0e1016; } text { fill: #e8e9ef; } .track { fill: #23262f; } .muted { fill: #4a4e5c; } .tie { stroke: #9a9fb1; }
+	.bar.memory, .swatch.memory, tspan.memory { fill: #7fa4f5; } .bar.loss, tspan.loss { fill: #ff7a70; }
+	}
+	</style>
+	"""
+
+# the legend: a swatch and its words per key
+fn legend(keys Key[]):
+	out = []
+	x = nameWidth
+	for key in keys:
+		out.push(
+			"<rect class=\"{key.kind}\" x=\"{x:.0}\" y=\"4\" width=\"14\" height=\"10\" rx=\"2\"/>"
+		)
+		out.push("<text x=\"{x + 20.0:.0}\" y=\"14\">{key.label}</text>")
+		x += 44.0 + 8.0 * key.label.len
+	out.join("\n")
+
+# a row's values, each past the first in its bar's color
+fn values(row Row):
+	parts = []
+	for j, fill in row.fills:
+		kind = "memory" if j > 0 else ""
+		parts.push(
+			"<tspan class=\"{kind} loss\">{fill.value}</tspan>" if fill.loss
+			else "<tspan class=\"{kind}\">{fill.value}</tspan>"
+		)
+	parts.join("  ")
+
+# one chart as an SVG picture
+fn picture(block Block):
+	bars = 1.0 if block.rows.isEmpty else f64(block.rows[0].fills.len)
+	barHeight f64 = 12.0 if bars == 1.0 else 7.0
+	rowHeight = 24.0 if bars == 1.0 else 28.0
+	top = 0.0 if block.keys.isEmpty else keysHeight
+	width = nameWidth + trackWidth + valueWidth * bars + 2.0 * padding
+	height = top + rowHeight * block.rows.len + 2.0 * padding
+	out = [
+		"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"{width:.0}\" height=\"{height:.0}\" viewBox=\"0 0 {width:.0} {height:.0}\" font-family=\"JetBrains Mono, Consolas, monospace\" font-size=\"13\">",
+		pictureStyle.copy(),
+		"<rect class=\"bg\" width=\"{width:.0}\" height=\"{height:.0}\" rx=\"10\"/>",
+		"<g transform=\"translate({padding:.0} {padding - 4.0:.0})\">",
+		legend(block.keys)
+	]
+	stack = bars * barHeight + (bars - 1.0) * barGap
+	for i, row in block.rows:
+		y = top + 4.0 + rowHeight * i
+		barTop = y + (rowHeight - stack) / 2.0
+		out.push("<text x=\"0\" y=\"{y + rowHeight / 2.0 + 4.0:.0}\">{row.name}</text>")
+		out.push("<rect class=\"track\" x=\"{nameWidth:.0}\" y=\"{barTop:.1}\" width=\"{trackWidth:.0}\" height=\"{stack:.0}\" rx=\"3\"/>")
+		for j, fill in row.fills:
+			out.push("<rect class=\"{fill.kind}\" x=\"{nameWidth:.0}\" y=\"{barTop + j * (barHeight + barGap):.1}\" width=\"{trackWidth * share(fill.width):.1}\" height=\"{barHeight:.0}\" rx=\"3\"/>")
+		out.push("<text x=\"{width - 2.0 * padding:.0}\" y=\"{y + rowHeight / 2.0 + 4.0:.0}\" text-anchor=\"end\">{row.values()}</text>")
+	if not block.tie.isEmpty:
+		x = nameWidth + trackWidth * share(block.tieShare)
+		out.push("<line class=\"tie\" x1=\"{x:.1}\" y1=\"{top:.0}\" x2=\"{x:.1}\" y2=\"{height - 2.0 * padding + 8.0:.0}\"/>")
+	out.push("</g>")
+	out.push("</svg>")
+	out.join("\n")
+
+# the README's pictures: the time and memory, then the size of the code, by their file names
+pub fn pictures(words Words, source readme.Readme) (str, str)[]:
+	names = ["speed", "code"]
+	blocks = words.blocks(source)
+	(0..blocks.len.min(names.len)).map(("charts/{names[it]}.svg", blocks[it].picture()))

@@ -1,0 +1,174 @@
+# Bar charts as values: a row per problem or language, the width of its bar a percentage of the
+# axis, the value printed beside it; a row's own tooltip says what its program does and how each
+# language did. The README's `Nx`
+# cells are the data.
+
+import readme
+
+type Bar:
+	name str
+	value f64
+	detail str   # the tooltip: each language's ratio
+	loss bool   # beyond the tie
+
+# a README cell "0.94x" as its number; none for "-" and any other text
+fn ratioOf(cell str):
+	if not cell.endsWith("x"): return none
+	f64.parse(cell[..len - 1])
+
+fn percent(value f64, axisMax f64):
+	"{value / axisMax * 100.0:.1}%"
+
+# a number as the page's language writes it: in Portuguese the decimal point a comma and the
+# thousands' comma a point
+pub fn number(words Words, text str) str:
+	if words.lang != "pt": return text.copy()
+	str(text.bytes().map('.' if it == ',' else ',' if it == '.' else it))
+
+# the bar of one row of the speed table: the largest ratio of its columns (Zap against the best
+# rival), with all of them listed; Python is listed but never the best rival (its helper
+# processes are not in its measures)
+fn rivalBar(row (str[]), cols i64[], rivals str[]):
+	worst = 0.0
+	parts = []
+	for k, col in cols:
+		cell = ratioOf(row[col])
+		if cell is found:
+			parts.push("{rivals[k]} {found:.2}x")
+			if found > worst and rivals[k] != "Python": worst = found
+	Bar(name = row[0].copy(), value = worst, detail = parts.join(" · "), loss = worst > 1.0)
+
+# the columns of one measure in the speed table's header, from `first` ("time C" or "memory C") to
+# the next measure, and each one's language (the header without its measure's word)
+fn columnsFrom(header str[], first str):
+	start = header.findIndex(it == first) ?? return []
+	cols = [start]
+	k = start + 1
+	while k < header.len and not header[k].startsWith("memory") and
+		not header[k].startsWith("time"):
+		cols.push(k)
+		k += 1
+	cols
+
+fn languageOf(cell str):
+	at = cell.indexOf(" ") ?? return cell.copy()
+	cell[i64(at) + 1..].copy()
+
+fn isProblem(row (str[])):
+	row[0] != "worst" and row[0] != "geomean"
+
+fn rivalBars(table readme.Numbers, cols i64[]):
+	rivals = cols.map(languageOf(table.rows[0][it]))
+	bars = table.rows[1..].filter(r: isProblem(r)).map(rivalBar(it, cols, rivals))
+	bars.sortBy(.value)   # the smallest first
+	bars
+
+fn axisOf(bars Bar[], least f64):
+	top = least
+	for b in bars:
+		if b.value * 1.05 > top: top = b.value * 1.05
+	top
+
+# what a problem's program does, for its name's tooltip; "" for a language's bar
+fn about(name str, words Words):
+	i = words.programs.findIndex(.name == name) ?? return ""
+	words.programs[i].text.copy()
+
+# one bar of a row: its class, its width on the axis and the value printed beside it
+pub type Fill:
+	kind str
+	width str
+	value str
+	loss bool
+
+pub type Row:
+	about str
+	name str
+	fills Fill[]
+	detail str
+
+# a chart's legend entry: its swatch's class and its words
+pub type Key:
+	kind str
+	label str
+
+pub type Block:
+	intro str
+	title str
+	tie str   # the label of the guide row, "" for none
+	tieShare str
+	keys Key[] = []
+	rows Row[]
+
+fn fill(b Bar, axisMax f64, kind str, words Words):
+	Fill(
+		kind = "{kind} loss" if b.loss else kind.copy(),
+		width = percent(b.value, axisMax),
+		value = words.number("{b.value:.2}x"),
+		loss = b.loss
+	)
+
+fn barRow(b Bar, axisMax f64, kind str, words Words):
+	Row(
+		about = about(b.name, words),
+		name = b.name.copy(),
+		fills = [b.fill(axisMax, kind, words)],
+		detail = words.number(b.detail)
+	)
+
+# a chart with its heading
+fn block(intro str, title str, tie str, axisMax f64, move rows Row[]):
+	Block(
+		intro = intro.copy(),
+		title = title.copy(),
+		tie = tie.copy(),
+		tieShare = percent(1.0, axisMax),
+		rows
+	)
+
+# one bar per language from the tokens table's last row ("vs Zap"); Zap's in the accent
+fn tokensBlock(table readme.Numbers, words Words) Block:
+	last = table.rows[len - 1]
+	bars = []
+	for k in 1..last.len:
+		value = ratioOf(last[k]) ?? continue
+		bars.push(Bar(name = table.rows[0][k].copy(), value, detail = "", loss = false))
+	bars.sortBy(.value)   # the smallest first
+	axisMax = axisOf(bars, 1.2)
+	rows = bars.map(.barRow(axisMax, "bar muted" if .name != "Zap" else "bar", words))
+	block(words.tokensGuide, words.tokensChart, "", axisMax, rows)
+
+# one row per problem with two bars, its time and its memory against the best rival, in the order
+# of its time
+fn pairBlock(table readme.Numbers, words Words):
+	header = table.rows[0]
+	times = table.rivalBars(columnsFrom(header, "time C"))
+	memories = table.rivalBars(columnsFrom(header, "memory C"))
+	axisMax = axisOf(memories, axisOf(times, 1.2))
+	rows = []
+	for t in times:
+		i = memories.findIndex(.name == t.name) ?? continue
+		m = memories[i]
+		rows.push(Row(
+			about = about(t.name, words),
+			name = t.name.copy(),
+			fills = [t.fill(axisMax, "bar", words), m.fill(axisMax, "bar memory", words)],
+			detail = words.number("{words.timeChart}: {t.detail}\n{words.memoryChart}: {m.detail}")
+		))
+	Block(
+		intro = "",
+		title = words.speedChart.copy(),
+		tie = words.tie.copy(),
+		tieShare = percent(1.0, axisMax),
+		keys = [Key(kind = "swatch", label = words.timeChart.copy()), Key(kind = "swatch memory", label = words.memoryChart.copy())],
+		rows
+	)
+
+# the charts of the page and the README: time and memory together, then the size of the code
+pub fn blocks(words Words, source readme.Readme) Block[]:
+	found = []
+	for t in source.tables.filter(.name == "speed"):
+		found.push(t.pairBlock(words))
+	for t in source.tables.filter(.name == "tokens"):
+		found.push(t.tokensBlock(words))
+	found

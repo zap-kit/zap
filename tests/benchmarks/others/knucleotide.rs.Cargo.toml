@@ -1,0 +1,10 @@
+[package]
+name = "knucleotide"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+fxhash = "0.2.1"
+num-traits = "0.2.19"
+num_cpus = "1.17.0"
+scoped_threadpool = "0.1.9"

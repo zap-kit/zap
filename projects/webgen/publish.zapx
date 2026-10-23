@@ -1,0 +1,35 @@
+# A built site published into a git clone of the repository that serves it: the clone made to
+# hold the site's pages and files and nothing else (its own dotfiles, .git and the host's, kept),
+# then committed when that changed anything. The push is the caller's.
+
+import fs
+
+# the site's pages and files mirrored into the clone and committed there with the message when
+# something changed: whether it committed
+pub fn publish(site Site, clone str, message str) bool ? str:
+	if not fs.exists("{clone}/.git"): return "{clone} is not a git clone"
+	paths = site.pages.map(.path.copy())
+	paths.extend(site.files.map(.to.copy()))
+	for path in paths:
+		bytes = fs.readBytes("{site.out}/{path}") ?? return "cannot read {site.out}/{path}: {error}"
+		try writeTo("{clone}/{path}", bytes)
+	try removeOthers(clone, "", paths)
+	# what add stages, not what status lists: a file written with the bytes git would check out
+	# (its line ends converted) is no change
+	if Process.output("git -c core.safecrlf=false add -A", dir = clone).code != 0:
+		return "git cannot add in {clone}"
+	if Process.output("git diff --cached --quiet", dir = clone).code == 0: return false
+	run = Process.output("git commit -q -m {quoteArg(message)}", dir = clone)
+	if run.code != 0: return "git cannot commit in {clone}: {run.out}"
+	true
+
+# what is under clone/dir but none of the paths, removed: a dir with none of them whole
+fn removeOthers(clone str, dir str, paths str[]) ? str:
+	for name in fs.list("{clone}/{dir}") ?? []:
+		if name.startsWith("."): continue
+		path = name.copy() if dir == "" else "{dir}/{name}"
+		if path in paths: continue
+		if paths.any(.startsWith("{path}/")):
+			try removeOthers(clone, path, paths)
+		else:
+			fs.deleteTree("{clone}/{path}") ?? return "cannot remove {clone}/{path}: {error}"

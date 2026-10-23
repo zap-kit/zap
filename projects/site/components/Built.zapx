@@ -1,0 +1,18 @@
+import content
+
+fn Built(heading str, cards content.Card[]):
+	<section class="reveal">
+		<h2>{heading}</h2>
+		<ul class="built">
+			{for card in cards:
+				<li>
+					{if not card.thumb.isEmpty: <img src={card.thumb} alt="" loading="lazy" />}
+					<div class="built-name">
+						{if card.href.isEmpty: card.label else: <a href={card.href}>{card.label}</a>}
+						<span>{card.lines}</span>
+					</div>
+					{if not card.note.isEmpty: <p>{card.note}</p>}
+				</li>
+			}
+		</ul>
+	</section>

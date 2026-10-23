@@ -1,0 +1,6 @@
+compiler/zap.zap .data 2392936
+compiler/zap.zap .text 9579763
+compiler/zap.zap build 26.30
+compiler/zap.zap exe 11969536
+compiler/zap.zap functions 4590
+compiler/zap.zap peak 303423488

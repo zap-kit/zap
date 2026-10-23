@@ -1,0 +1,22 @@
+import content
+
+fn Row(row content.Row):
+	<li class="row" tabindex="0">
+		<span class="name">{row.name}</span>
+		<div class="track">
+			{for fill in row.fills:
+				<div class={fill.kind} style="--w: {fill.width}"></div>
+			}
+		</div>
+		<span class="value">
+			{for fill in row.fills:
+				<span class={"loss" if fill.loss else ""}>{fill.value}</span>
+			}
+		</span>
+		{if not row.about.isEmpty or not row.detail.isEmpty:
+			<span class="tip-box" role="tooltip">
+				{if not row.about.isEmpty: <span class="tip-about">{row.about}</span>}
+				{row.detail}
+			</span>
+		}
+	</li>

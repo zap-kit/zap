@@ -1,0 +1,74 @@
+# The sample's Zap as HTML: keywords, type names, strings and numbers in spans, the rest escaped.
+
+keywords = [
+	"type",
+	"fn",
+	"mut",
+	"for",
+	"in",
+	"if",
+	"elif",
+	"else",
+	"match",
+	"return",
+	"import",
+	"move",
+	"ref",
+	"while",
+	"loop",
+	"and",
+	"or",
+	"not"
+]
+builtinTypes = ["str", "i64", "f64", "f32", "bool", "u8", "u32"]
+
+pub fn escaped(s str) str:
+	s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+
+fn code(c str):
+	c.charCode()
+
+fn isWordChar(c str):
+	c == "_" or u8(code(c)).isAlpha() or u8(code(c)).isDigit() if code(c) < 128 else false
+
+fn span(kind str, text str):
+	"<span class=\"{kind}\">{escaped(text)}</span>"
+
+fn wordHtml(w str):
+	if w.isEmpty: return ""
+	if w.chars().all(u8(code(it)).isDigit()): return span("n", w)
+	if keywords.any(it == w): return span("k", w)
+	first = code(w)
+	if builtinTypes.any(it == w) or first >= 65 and first <= 90: return span("t", w)
+	escaped(w)
+
+fn codeHtml(source str):
+	out = ""
+	word = ""
+	quoted = false
+	for c in source.chars():
+		if quoted:
+			word += c
+			if c == "\"":
+				out += span("s", word)
+				word = ""
+				quoted = false
+		elif c == "\"":
+			out += wordHtml(word)
+			word = c.copy()
+			quoted = true
+		elif isWordChar(c):
+			word += c
+		else:
+			out = out + wordHtml(word) + escaped(c)
+			word = ""
+	out + (span("s", word) if quoted else wordHtml(word))
+
+# a line that is a comment, from its # on, in the comment's span
+fn lineHtml(line str):
+	at = line.indexOf("#") ?? return codeHtml(line)
+	if not line[..at].trimmed().isEmpty: return codeHtml(line)
+	"{line[..at]}{span("c", line[at..])}"
+
+pub fn highlight(source str) str:
+	source.lines().map(lineHtml(it)).join("\n")

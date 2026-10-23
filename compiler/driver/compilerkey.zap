@@ -1,0 +1,46 @@
+# The key every cache of the compiler's results is kept under (the parse and IR caches, zap fmt's
+# files laid out, the passes of zap test): what can change the compiler's behaviour, the sources
+# its build read (compiler/ and the runtime and std files it imports), not its bytes. A build of
+# the compiler writes the key beside its executable with the executable's hash; same sources give
+# the same key wherever they were built (the fixed point, spec 14.1, gives the same behaviour).
+
+import fs
+
+# the key once known (0 before)
+mut compilerKeyKnown = 0
+
+# each source file this process parsed and its text hashed, as read
+mut sourcesParsed str[] = []
+mut sourceHashes i64[] = []
+
+fn noteSourceParsed(at str, text str):
+	sourcesParsed.push(at.copy())
+	sourceHashes.push(text.hash())
+
+# where the key of the executable at exe is kept: beside it (build/zap.sources)
+fn sourcesKeyFile(exe str):
+	"{fs.dirOf(exe)}/{fs.stem(exe)}.sources"
+
+# This compiler's key: its sources' (sourcesKeyFile) while the file is its executable's, else
+# the hash of its executable (a compiler copied without it, or built by one before the key)
+pub fn compilerKey() i64:
+	if compilerKeyKnown != 0: return compilerKeyKnown
+	exe = exePath()
+	bytes = (fs.readFile(exe) ?? "").hash()
+	kept = (fs.readFile(sourcesKeyFile(exe)) ?? "").lines()
+	compilerKeyKnown = bytes
+	if kept.len == 2 and kept[0] == "{bytes}":
+		compilerKeyKnown = i64.parse(kept[1]) ?? bytes
+	compilerKeyKnown
+
+# the key of the sources this process parsed for the target: each file's name as a build anywhere
+# names it (portablePath) with its text's hash
+fn sourcesKey():
+	lines = (0..sourcesParsed.len).map("{portablePath(sourcesParsed[it])}\t{sourceHashes[it]}")
+	"{targets[buildTarget].name}\n{lines.sorted().join("\n")}".hash()
+
+# after a build of the compiler from entry to exe, the key of its sources kept beside it
+fn keepCompilerKey(entry str, exe str):
+	if portablePath(entry) != compilerSource: return
+	bytes = (fs.readFile(exe) ?? "").hash()
+	_ = fs.writeFile(sourcesKeyFile(exe), "{bytes}\n{sourcesKey()}")

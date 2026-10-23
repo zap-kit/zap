@@ -1,0 +1,20 @@
+import content
+
+fn Chart(block content.Block):
+	<div class="linechart">
+		{if not block.keys.isEmpty:
+			<ul class="keys">
+				{for key in block.keys:
+					<li><span class={key.kind}></span>{key.label}</li>
+				}
+			</ul>
+		}
+		<ul class={"chart" if block.keys.isEmpty else "chart pair"} style="--tie: {block.tieShare}" aria-label={block.title}>
+			{if not block.tie.isEmpty:
+				<li class="row axis" aria-hidden="true"><span></span><div class="track"><span class="tie">{block.tie}</span></div><span></span></li>
+			}
+			{for row in block.rows:
+				<Row row={row} />
+			}
+		</ul>
+	</div>

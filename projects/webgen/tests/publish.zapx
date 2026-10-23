@@ -1,0 +1,44 @@
+# Publishing: the site mirrored into a git clone and committed there when something changed.
+
+import fs
+import webgen
+
+# what git prints in dir
+fn gitOut(dir str, words str):
+	Process.output("git {words}", dir = dir).out.trimmedEnd().copy()
+
+test "a site published into a clone replaces what the clone held, keeps its dotfiles, and commits only a change":
+	dir = testDir()
+	clone = "{dir}clone"
+	_ = fs.deleteTree(clone)
+	_ = fs.createDir("{clone}/old")
+	gitOut(clone, "init -q")
+	gitOut(clone, "config user.email site@example.com")
+	gitOut(clone, "config user.name site")
+	_ = fs.writeFile("{clone}/.nojekyll", "")
+	_ = fs.writeFile("{clone}/old/page.html", "old")
+	_ = fs.writeFile("{clone}/index.html", "old")
+	gitOut(clone, "add -A")
+	gitOut(clone, "commit -q -m first")
+	_ = fs.writeFile("{dir}style.css", "body")
+	site = webgen.Site(
+		out = "{dir}out",
+		pages = [webgen.page("index.html", "new"), webgen.page("en/index.html", "en")],
+		files = [webgen.copy("{dir}style.css", "css/style.css")]
+	)
+	site.build() ?? exit(1, error)
+	print(site.publish(clone, "site from main") ?? exit(1, error))
+	print(gitOut(clone, "ls-files"))
+	print(gitOut(clone, "log -1 --format=%s"))
+	print(site.publish(clone, "again") ?? exit(1, error))
+	print(gitOut(clone, "rev-list --count HEAD"))
+	prints """
+		true
+		.nojekyll
+		css/style.css
+		en/index.html
+		index.html
+		site from main
+		false
+		2
+		"""

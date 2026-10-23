@@ -1,0 +1,92 @@
+# The few numbers the page opens with: Zap against the runner-up of each measure (the rival closest
+# to it), found in the README's tables; the words around them are the page's.
+
+import readme
+
+pub type Stat:
+	value str
+	label str
+
+# the cell of table `name` in the row whose first cell is `first`, at `column`; "" when missing
+fn cellOf(source readme.Readme, name str, first str, column i64):
+	for t in source.tables:
+		if t.name == name:
+			for r in t.rows:
+				if r.len > column and r[0] == first: return r[column].copy()
+	""
+
+# Zap's time over a rival's, "0.71x", as how much faster Zap is: "41%" (its speed over the rival's,
+# less one); other text as is
+fn faster(cell str):
+	r = ratioOf(cell) ?? return cell.copy()
+	if r <= 0.0: return cell.copy()
+	"{(1.0 / r - 1.0) * 100.0:.0}%"
+
+# a rival's tokens over Zap's, "2.16x", as how much less code Zap needs: "54%"
+fn lessCode(cell str):
+	r = ratioOf(cell) ?? return cell.copy()
+	if r <= 0.0: return cell.copy()
+	"{(1.0 - 1.0 / r) * 100.0:.0}%"
+
+# Zap's time or memory over a rival's, "0.83x", as how much less Zap needs: "17%"
+fn less(cell str):
+	r = ratioOf(cell) ?? return cell.copy()
+	"{(1.0 - r) * 100.0:.0}%"
+
+# the columns of the speed table's `first` measure ("time C", "memory C") up to the next measure
+fn tableNamed(source readme.Readme, name str) readme.Numbers?:
+	i = try source.tables.findIndex(.name == name)
+	source.tables[i].copy()
+
+fn rowNamed(t readme.Numbers, first str):
+	i = t.rows.findIndex(.len > 0 and it[0] == first) ?? return []
+	t.rows[i].copy()
+
+# the runner-up of a measure: the rival whose geometric mean is closest to Zap's (the largest
+# ratio of Zap's over it), its cell and its language
+fn runnerUp(t readme.Numbers, first str):
+	geomean = t.rowNamed("geomean")
+	best = "", ""
+	most = 0.0
+	for col in columnsFrom(t.rows[0], first):
+		r = ratioOf(geomean[col] if col < geomean.len else "") ?? continue
+		if r > most:
+			most = r
+			best = geomean[col].copy(), languageOf(t.rows[0][col])
+	best
+
+# the compiled language whose tokens are closest to Zap's: the smallest of the "vs Zap" row past
+# Zap's own, Python left out
+fn closestCode(t readme.Numbers):
+	ratios = t.rowNamed("vs Zap")
+	best = "", ""
+	least = 1.0e9
+	for col in 2..ratios.len:
+		if t.rows[0][col] == "Python": continue   # close to Zap in code, far behind in everything else
+		r = ratioOf(ratios[col]) ?? continue
+		if r < least:
+			least = r
+			best = ratios[col].copy(), t.rows[0][col].copy()
+	best
+
+fn statAgainst(value str, label str, language str, count i64):
+	Stat(
+		value = value.copy(),
+		label = label.replace("%lang", language).replace("%count", "{count}")
+	)
+
+# against the runner-up of each: time, memory, code; then the compiler building itself
+pub fn stats(source readme.Readme, labels str[]) Stat[]:
+	out = []
+	if source.tableNamed("speed") is speed:
+		count = speed.rows.count(.len > 0 and it[0] != "worst" and it[0] != "geomean") - 1   # the problems, the header left out
+		time, timeLang = speed.runnerUp("time C")
+		if not time.isEmpty: out.push(statAgainst(faster(time), labels[0], timeLang, count))
+		memory, memoryLang = speed.runnerUp("memory C")
+		if not memory.isEmpty: out.push(statAgainst(less(memory), labels[1], memoryLang, count))
+	if source.tableNamed("tokens") is tokens:
+		code, codeLang = tokens.closestCode()
+		if not code.isEmpty: out.push(statAgainst(lessCode(code), labels[2], codeLang, 0))
+	built = source.cellOf("compiler", "builds itself in", 1)
+	if not built.isEmpty: out.push(statAgainst(built, labels[3], "", 0))
+	out

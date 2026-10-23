@@ -1,0 +1,8 @@
+import content
+
+fn Stats(words content.Words, stats content.Stat[]):
+	<section class="stats" aria-label={words.numbers}>
+		{for stat in stats:
+			<div class="stat"><b data-count={stat.value} data-point={words.number(".")}>{words.number(stat.value)}</b><span>{stat.label}</span></div>
+		}
+	</section>

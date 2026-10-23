@@ -1,0 +1,304 @@
+target 1.50
+base64 branchmisses full 1.22
+base64 branchmisses quick 1.07
+base64 cachemisses full 1.24
+base64 cachemisses quick 1.25
+base64 exe 0.19
+base64 instructions full 1.66
+base64 instructions quick 1.66
+base64 memory full 1.00
+base64 memory quick 0.99
+base64 time full 1.55
+base64 time quick 1.56
+base64 tokens 0.97
+binarytrees branchmisses full 1.61
+binarytrees branchmisses quick 1.75
+binarytrees cachemisses full 1.02
+binarytrees cachemisses quick 0.98
+binarytrees exe 0.23
+binarytrees instructions full 2.21
+binarytrees instructions quick 2.15
+binarytrees memory full 1.01
+binarytrees memory quick 0.68
+binarytrees time full 1.76
+binarytrees time quick 1.75
+binarytrees tokens 1.11
+brainfudge branchmisses full 0.98
+brainfudge branchmisses quick 1.00
+brainfudge cachemisses full 6.65
+brainfudge cachemisses quick 7.09
+brainfudge exe 0.21
+brainfudge instructions full 1.57
+brainfudge instructions quick 1.57
+brainfudge memory full 0.07
+brainfudge memory quick 0.55
+brainfudge time full 1.31
+brainfudge time quick 1.31
+brainfudge tokens 1.01
+coroprimesieve branchmisses full 1.29
+coroprimesieve branchmisses quick 1.34
+coroprimesieve cachemisses full 0.94
+coroprimesieve cachemisses quick 1.22
+coroprimesieve exe 0.21
+coroprimesieve instructions full 2.76
+coroprimesieve instructions quick 2.71
+coroprimesieve memory full 0.07
+coroprimesieve memory quick 0.55
+coroprimesieve time full 0.96
+coroprimesieve time quick 1.06
+coroprimesieve tokens 0.94
+dijkstra branchmisses full 0.78
+dijkstra branchmisses quick 0.72
+dijkstra cachemisses full 0.79
+dijkstra cachemisses quick 0.74
+dijkstra exe 0.22
+dijkstra instructions full 1.97
+dijkstra instructions quick 2.04
+dijkstra memory full 1.00
+dijkstra memory quick 0.92
+dijkstra time full 1.14
+dijkstra time quick 1.17
+dijkstra tokens 0.81
+exprtree branchmisses full 1.08
+exprtree branchmisses quick 1.08
+exprtree cachemisses full 0.35
+exprtree cachemisses quick 0.44
+exprtree exe 0.22
+exprtree instructions full 1.55
+exprtree instructions quick 1.54
+exprtree memory full 0.99
+exprtree memory quick 0.77
+exprtree time full 1.32
+exprtree time quick 1.35
+exprtree tokens 0.90
+fannkuchredux branchmisses full 1.07
+fannkuchredux branchmisses quick 1.09
+fannkuchredux cachemisses full 13.45
+fannkuchredux cachemisses quick 3.44
+fannkuchredux exe 0.23
+fannkuchredux instructions full 8.17
+fannkuchredux instructions quick 8.27
+fannkuchredux memory full 0.12
+fannkuchredux memory quick 0.74
+fannkuchredux time full 3.89
+fannkuchredux time quick 3.95
+fannkuchredux tokens 0.94
+fasta branchmisses full 119.26
+fasta branchmisses quick 89.47
+fasta cachemisses full 35.34
+fasta cachemisses quick 35.10
+fasta exe 0.30
+fasta instructions full 5.14
+fasta instructions quick 5.14
+fasta memory full 0.12
+fasta memory quick 0.56
+fasta time full 3.18
+fasta time quick 3.19
+fasta tokens 0.55
+havlak branchmisses full 7.22
+havlak branchmisses quick 7.02
+havlak cachemisses full 3.41
+havlak cachemisses quick 3.43
+havlak exe 0.25
+havlak instructions full 2.93
+havlak instructions quick 2.92
+havlak memory full 1.16
+havlak memory quick 1.16
+havlak time full 2.75
+havlak time quick 2.78
+havlak tokens 1.45
+httpjson branchmisses full 3.29
+httpjson branchmisses quick 3.67
+httpjson cachemisses full 3.30
+httpjson cachemisses quick 3.76
+httpjson exe 0.27
+httpjson instructions full 6.50
+httpjson instructions quick 6.57
+httpjson memory full 0.19
+httpjson memory quick 0.88
+httpjson time full 5.87
+httpjson time quick 5.95
+httpjson tokens 0.72
+jsonrecords branchmisses full 1.33
+jsonrecords branchmisses quick 1.31
+jsonrecords cachemisses full 1.06
+jsonrecords cachemisses quick 1.13
+jsonrecords exe 0.25
+jsonrecords instructions full 1.53
+jsonrecords instructions quick 1.55
+jsonrecords memory full 0.83
+jsonrecords memory quick 0.87
+jsonrecords time full 1.32
+jsonrecords time quick 1.39
+jsonrecords tokens 0.88
+knucleotide branchmisses full 2.40
+knucleotide branchmisses quick 1.92
+knucleotide cachemisses full 1.03
+knucleotide cachemisses quick 0.96
+knucleotide exe 0.24
+knucleotide instructions full 4.45
+knucleotide instructions quick 3.82
+knucleotide memory full 0.60
+knucleotide memory quick 0.94
+knucleotide time full 3.57
+knucleotide time quick 3.07
+knucleotide tokens 0.69
+lab-balls time quick 1.36
+lru branchmisses full 0.57
+lru branchmisses quick 0.99
+lru cachemisses full 0.83
+lru cachemisses quick 0.93
+lru exe 0.23
+lru instructions full 4.23
+lru instructions quick 4.67
+lru memory full 0.46
+lru memory quick 0.67
+lru time full 2.13
+lru time quick 2.67
+lru tokens 2.52
+mandelbrot branchmisses full 0.85
+mandelbrot branchmisses quick 0.81
+mandelbrot cachemisses full 6.62
+mandelbrot cachemisses quick 6.76
+mandelbrot exe 0.24
+mandelbrot instructions full 11.84
+mandelbrot instructions quick 11.86
+mandelbrot memory full 1.03
+mandelbrot memory quick 0.62
+mandelbrot time full 5.60
+mandelbrot time quick 5.59
+mandelbrot tokens 1.21
+mario-1x time quick 0.82
+mario-4x time quick 0.87
+matmul branchmisses full 71.76
+matmul branchmisses quick 0.94
+matmul cachemisses full 0.38
+matmul cachemisses quick 0.51
+matmul exe 0.20
+matmul instructions full 4.42
+matmul instructions quick 4.33
+matmul memory full 0.98
+matmul memory quick 0.55
+matmul time full 2.17
+matmul time quick 3.27
+matmul tokens 0.73
+nbody branchmisses full 1.23
+nbody branchmisses quick 1.09
+nbody cachemisses full 17.01
+nbody cachemisses quick 6.62
+nbody exe 0.25
+nbody instructions full 8.24
+nbody instructions quick 8.23
+nbody memory full 0.44
+nbody memory quick 0.57
+nbody time full 4.18
+nbody time quick 4.18
+nbody tokens 1.11
+nsieve branchmisses full 1.04
+nsieve branchmisses quick 1.04
+nsieve cachemisses full 1.03
+nsieve cachemisses quick 0.96
+nsieve exe 0.21
+nsieve instructions full 1.17
+nsieve instructions quick 1.17
+nsieve memory full 0.97
+nsieve memory quick 0.55
+nsieve time full 1.04
+nsieve time quick 1.13
+nsieve tokens 0.72
+pidigits branchmisses full 0.55
+pidigits branchmisses quick 0.54
+pidigits cachemisses full 0.76
+pidigits cachemisses quick 4.08
+pidigits exe 0.37
+pidigits instructions full 2.34
+pidigits instructions quick 2.26
+pidigits memory full 0.07
+pidigits memory quick 1.00
+pidigits time full 1.24
+pidigits time quick 1.26
+pidigits tokens 0.78
+raytrace branchmisses full 29.94
+raytrace branchmisses quick 12.54
+raytrace cachemisses full 1.40
+raytrace cachemisses quick 1.07
+raytrace exe 0.21
+raytrace instructions full 1.38
+raytrace instructions quick 1.38
+raytrace memory full 0.18
+raytrace memory quick 0.55
+raytrace time full 1.16
+raytrace time quick 1.16
+raytrace tokens 0.73
+regexredux branchmisses full 0.85
+regexredux branchmisses quick 0.83
+regexredux cachemisses full 1.66
+regexredux cachemisses quick 1.52
+regexredux exe 0.20
+regexredux instructions full 4.15
+regexredux instructions quick 4.14
+regexredux memory full 1.33
+regexredux memory quick 1.00
+regexredux time full 2.92
+regexredux time quick 2.90
+regexredux tokens 0.76
+revcomp branchmisses full 1.84
+revcomp branchmisses quick 1.50
+revcomp cachemisses full 3.85
+revcomp cachemisses quick 2.79
+revcomp exe 0.27
+revcomp instructions full 10.46
+revcomp instructions quick 10.41
+revcomp memory full 1.01
+revcomp memory quick 1.11
+revcomp time full 10.51
+revcomp time quick 10.03
+revcomp tokens 2.20
+spectralnorm branchmisses full 1.15
+spectralnorm branchmisses quick 1.12
+spectralnorm cachemisses full 21.71
+spectralnorm cachemisses quick 4.26
+spectralnorm exe 0.24
+spectralnorm instructions full 6.78
+spectralnorm instructions quick 6.76
+spectralnorm memory full 0.11
+spectralnorm memory quick 0.35
+spectralnorm time full 2.62
+spectralnorm time quick 2.61
+spectralnorm tokens 1.29
+strsort branchmisses full 1.15
+strsort branchmisses quick 1.03
+strsort cachemisses full 0.37
+strsort cachemisses quick 0.47
+strsort exe 0.24
+strsort instructions full 4.95
+strsort instructions quick 4.99
+strsort memory full 0.67
+strsort memory quick 0.64
+strsort time full 1.44
+strsort time quick 1.74
+strsort tokens 1.23
+sudoku branchmisses full 1.37
+sudoku branchmisses quick 1.36
+sudoku cachemisses full 2.49
+sudoku cachemisses quick 2.27
+sudoku exe 0.20
+sudoku instructions full 1.99
+sudoku instructions quick 1.99
+sudoku memory full 0.10
+sudoku memory quick 0.55
+sudoku time full 1.58
+sudoku time quick 1.58
+sudoku tokens 1.04
+wordfreq branchmisses full 0.79
+wordfreq branchmisses quick 0.43
+wordfreq cachemisses full 0.55
+wordfreq cachemisses quick 0.47
+wordfreq exe 0.22
+wordfreq instructions full 1.70
+wordfreq instructions quick 1.50
+wordfreq memory full 0.77
+wordfreq memory quick 0.57
+wordfreq time full 0.70
+wordfreq time quick 0.96
+wordfreq tokens 0.88

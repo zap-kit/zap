@@ -1,0 +1,17 @@
+import content
+
+fn Points(why str, points content.Point[], sampleHtml str):
+	<section class="reveal">
+		<h2>{why}</h2>
+		<div class="why">
+			<ul class="points">
+				{for point in points:
+					<li><strong>{point.lead}</strong> {raw(point.restHtml)}</li>
+				}
+			</ul>
+			<figure class="editor">
+				<figcaption><span class="dots"><i></i><i></i><i></i></span>team.zap</figcaption>
+				<pre><code>{raw(sampleHtml)}<span class="cursor" aria-hidden="true"></span></code></pre>
+			</figure>
+		</div>
+	</section>

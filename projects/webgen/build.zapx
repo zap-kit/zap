@@ -1,0 +1,35 @@
+# A static site: the pages (a path and its HTML) and the files copied as they are, written under `out`.
+
+import fs
+
+pub type Page:
+	path str   # under the output dir
+	html str
+
+pub type Copy:
+	from str
+	to str   # under the output dir
+
+pub type Site:
+	out str
+	pages Page[]
+	files Copy[]
+
+pub fn page(path str, html str) Page:
+	Page(path = path.copy(), html = html.copy())
+
+pub fn copy(from str, to str) Copy:
+	Copy(from = from.copy(), to = to.copy())
+
+fn writeTo(path str, bytes u8[]) ? str:
+	dir = fs.dirOf(path)
+	if not dir.isEmpty:
+		fs.createDir(dir) ?? return "cannot make {dir}: {error}"
+	_ = fs.writeChanged(path, bytes) ?? return "cannot write {path}: {error}"
+
+pub fn build(site Site) ? str:
+	for p in site.pages:
+		try writeTo("{site.out}/{p.path}", p.html.bytes())
+	for f in site.files:
+		bytes = fs.readBytes(f.from) ?? return "cannot read {f.from}: {error}"
+		try writeTo("{site.out}/{f.to}", bytes)

@@ -1,0 +1,14 @@
+import content
+
+fn Numbers(words content.Words, blocks content.Block[]):
+	<section class="reveal">
+		<h2>{words.numbers}</h2>
+		<p class="intro">{raw(words.sourcesHtml)}</p>
+		{for block in blocks:
+			<>
+				<h3>{block.title}</h3>
+				{if not block.intro.isEmpty: <p class="intro">{block.intro}</p>}
+				<Chart block={block} />
+			</>
+		}
+	</section>

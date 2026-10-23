@@ -1,0 +1,2 @@
+fn Tooltip(text str, move children Node):
+	<span class="tip" tabindex="0">{text}<span class="tip-box" role="tooltip">{children}</span></span>

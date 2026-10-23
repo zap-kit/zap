@@ -1,0 +1,12 @@
+import content
+
+fn Hero(words content.Words):
+	<header class="hero">
+		<div class="pitch">
+			<h1>{words.tagline}</h1>
+			<p class="actions">
+				<a class="btn primary" href="#discover">{words.cta}</a>
+			</p>
+			<p class="note">{words.heroNote}</p>
+		</div>
+	</header>

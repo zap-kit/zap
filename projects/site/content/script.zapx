@@ -1,0 +1,60 @@
+# The page's one script, in a scope of its own (a global `top` is the browser's window.top): the top
+# bar's border, numbers counting up, sections revealed as they scroll in, the programs' explanations
+# over the pointer or the touch, copy buttons.
+
+pub script = r"""
+(function () {
+	var bar = document.querySelector(".top");
+	function scrolled() { bar.classList.toggle("scrolled", window.scrollY > 4); }
+	addEventListener("scroll", scrolled, { passive: true });
+	scrolled();
+	var still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+	document.querySelectorAll("[data-count]").forEach(function (el) {
+	  var m = el.dataset.count.match(/^([0-9.]+)(.*)$/);
+	  if (!m || still) return;
+	  var end = parseFloat(m[1]), places = (m[1].split(".")[1] || "").length, t0 = null;
+	  function step(t) {
+	    if (t0 === null) t0 = t;
+	    var k = Math.min(1, (t - t0) / 900), e = 1 - Math.pow(1 - k, 3);
+	    el.textContent = (end * e).toFixed(places).replace(".", el.dataset.point || ".") + m[2];
+	    if (k < 1) requestAnimationFrame(step);
+	  }
+	  requestAnimationFrame(step);
+	});
+	if ("IntersectionObserver" in window && !still) {
+	  var seen = new IntersectionObserver(function (es) {
+	    es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("shown"); seen.unobserve(e.target); } });
+	  }, { threshold: 0.12 });
+	  document.querySelectorAll(".reveal").forEach(function (s) { seen.observe(s); });
+	} else {
+	  document.querySelectorAll(".reveal").forEach(function (s) { s.classList.add("shown"); });
+	}
+	document.querySelectorAll(".row").forEach(function (row) {
+	  var tip = row.querySelector(".tip-box");
+	  if (!tip) return;
+	  function at(e) {
+	    var r = row.getBoundingClientRect(), half = tip.offsetWidth / 2;
+	    var x = Math.min(Math.max(e.clientX - r.left, half), r.width - half);
+	    row.style.setProperty("--tip-x", x + "px");
+	    row.style.setProperty("--tip-y", (e.clientY - r.top) + "px");
+	  }
+	  row.addEventListener("pointermove", at);
+	  row.addEventListener("pointerdown", function (e) { at(e); row.focus(); });
+	});
+	document.querySelectorAll("button[data-copy]").forEach(function (b) {
+	  b.addEventListener("click", function () {
+	    var text = document.getElementById(b.dataset.copy).innerText;
+	    var label = b.textContent;
+	    navigator.clipboard.writeText(text).then(function () {
+	      b.textContent = b.dataset.done;
+	      setTimeout(function () { b.textContent = label; }, 1500);
+	    }, function () {
+	      var r = document.createRange();
+	      r.selectNodeContents(document.getElementById(b.dataset.copy));
+	      getSelection().removeAllRanges();
+	      getSelection().addRange(r);
+	    });
+	  });
+	});
+})();
+	"""

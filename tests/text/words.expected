@@ -1,0 +1,18 @@
+repeated: a=3, dog=2, fox=2, the=4
+distinct words: 15
+eilnst: listen silent enlist
+eggloo: google gogole
+act: cat act tac
+dgo: dog
+"A man, a plan, a canal: Panama!" palindrome: true
+"racecar" palindrome: true
+"hello" palindrome: false
+"No lemon, no melon" palindrome: true
+Khoor, Zruog! abc
+Hello, World! xyz
+levenshtein(kitten, sitting) = 3
+levenshtein(flaw, lawn) = 2
+levenshtein(intention, execution) = 5
+levenshtein(, abc) = 3
+levenshtein(same, same) = 0
+THE QUICK BROWN FOX | padded | ababab | ----x | cde

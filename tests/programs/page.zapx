@@ -1,0 +1,73 @@
+# A page of a small site written as markup: a layout component around the content, a component
+# per item, a loop over them and conditions on them.
+
+type Item:
+	name str
+	price f64
+	stock i64
+	tags str[]
+
+fn Layout(title str, user str?, move children Node):
+	<html>
+		<head>
+			<meta charset="utf-8">
+			<title>{title} | Shop</title>
+		</head>
+		<body>
+			<header>
+				<h1>{title}</h1>
+				{if user is name:
+					<p class="user">Signed in as {name}</p>
+				else:
+					<a href="/login">Sign in</a>
+				}
+			</header>
+			<main>{children}</main>
+		</body>
+	</html>
+
+fn ItemRow(item Item):
+	<tr class={"out" if item.stock == 0 else "in"} data-stock={item.stock}>
+		<td>{item.name}</td>
+		<td>{"{item.price:.2}"}</td>
+		<td>
+			{if item.stock == 0:
+				<em>sold out</em>
+			elif item.stock < 3:
+				<b>only {item.stock} left</b>
+			else:
+				"in stock"
+			}
+		</td>
+		<td>{for t in item.tags: <span class="tag">{t}</span>}</td>
+	</tr>
+
+fn shop(items Item[], user str?):
+	<Layout title="Items" user={user}>
+		{if items.isEmpty:
+			<p>Nothing for sale.</p>
+		else:
+			<table>
+				<tr><th>Name</th><th>Price</th><th>Stock</th><th>Tags</th></tr>
+				{for item in items:
+					<ItemRow item={item} />
+				}
+			</table>
+		}
+		<footer>{items.len} items, {items.map(.stock).sum()} in stock <br> (c) Zap & co</footer>
+	</Layout>
+
+items = [
+	Item("Lamp", 19.5, 4, ["home"]),
+	Item("Mug <large>", 7.25, 2, ["kitchen", "gift"]),
+	Item("Chair", 45.0, 0, [])
+]
+print(shop(items, "ana").render())
+print(shop([], none).render())
+
+test "page":
+	main()
+	prints """
+		<!DOCTYPE html><html><head><meta charset="utf-8"><title>Items | Shop</title></head><body><header><h1>Items</h1><p class="user">Signed in as ana</p></header><main><table><tr><th>Name</th><th>Price</th><th>Stock</th><th>Tags</th></tr><tr class="in" data-stock="4"><td>Lamp</td><td>19.50</td><td>in stock</td><td><span class="tag">home</span></td></tr><tr class="in" data-stock="2"><td>Mug &lt;large&gt;</td><td>7.25</td><td><b>only 2 left</b></td><td><span class="tag">kitchen</span><span class="tag">gift</span></td></tr><tr class="out" data-stock="0"><td>Chair</td><td>45.00</td><td><em>sold out</em></td><td></td></tr></table><footer>3 items, 6 in stock <br> (c) Zap &amp; co</footer></main></body></html>
+		<!DOCTYPE html><html><head><meta charset="utf-8"><title>Items | Shop</title></head><body><header><h1>Items</h1><a href="/login">Sign in</a></header><main><p>Nothing for sale.</p><footer>0 items, 0 in stock <br> (c) Zap &amp; co</footer></main></body></html>
+		"""

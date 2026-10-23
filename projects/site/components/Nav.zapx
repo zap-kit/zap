@@ -1,0 +1,10 @@
+import content
+
+fn Nav(up str, otherLang str, otherName str):
+	<nav class="top"><div class="inner">
+			<a class="mark" href="./"><img class="logo" src="{up}logo.svg" alt="">Zap</a>
+			<span class="navlinks">
+				<a href={content.repoUrl}>GitHub</a>
+				<a href="{up}{otherLang}/index.html" hreflang={otherLang} lang={otherLang}>{otherName}</a>
+			</span>
+		</div></nav>

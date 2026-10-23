@@ -1,0 +1,17 @@
+# The build: pages written under the output dir, files copied as they are.
+
+import fs
+import webgen
+
+test "pages are written and files copied":
+	out = "build/webgen-site"
+	src = "{out}-source.txt"
+	_ = fs.writeFile(src, "body")
+	site = webgen.Site(
+		out = out.copy(),
+		pages = [webgen.page("a/index.html", <p>Tom &amp; Jerry</p>.render())],
+		files = [webgen.copy(src, "style.css")]
+	)
+	site.build() ?? exit(1, error)
+	expect (fs.readFile("{out}/a/index.html") ?? "") == "<p>Tom &amp;amp; Jerry</p>"
+	expect (fs.readFile("{out}/style.css") ?? "") == "body"

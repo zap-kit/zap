@@ -1,0 +1,14 @@
+pub fn Redirect(script str) Node:
+	<html lang="en">
+		<head>
+			<Head up="" />
+			<link rel="stylesheet" href="style.css">
+		</head>
+		<body>
+			<script>{raw(script)}</script>
+			<header>
+				<h1>Zap</h1>
+				<noscript><p><a href="en/index.html">English</a> · <a href="pt/index.html" lang="pt">Português</a></p></noscript>
+			</header>
+		</body>
+	</html>

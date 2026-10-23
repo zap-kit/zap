@@ -1,0 +1,5 @@
+# every text file keeps LF on every checkout (whatever core.autocrlf says): the sources, the
+# suite (it compares bytes) and the scripts read the same everywhere
+* text=auto eol=lf
+*.exe binary
+*.png binary

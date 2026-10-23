@@ -1,0 +1,17 @@
+ZSH2
+parameter bytes 176
+part shaders.lit.Params at 0: textures 0+2, buffers 0+1, arrays 0+0
+texture binding 0 kind 1
+texture binding 1 kind 3
+storage binding 16
+input location 0 type 4 size 3 stream 0 offset 0
+input location 1 type 4 size 3 stream 0 offset 12
+input location 2 type 4 size 2 stream 0 offset 24
+input location 3 type 4 size 3 stream 1 offset 0
+input location 4 type 2 size 1 stream 1 offset 12
+strides 32 16
+vertex SPIR-V: true true
+pixel SPIR-V: true true
+vertex DXIL: true
+pixel DXIL: true
+0 bytes after

@@ -1,0 +1,57 @@
+# The projects built with Zap, each a link, its lines, its picture and what stands out in it, from
+# the README's `built` table.
+
+import readme
+
+# Where the README wrote a link, `[label](href)`, the `](` that splits it.
+fn linkSplit(source str):
+	if not source.startsWith("["): return none
+	source.indexOf("](")
+
+pub type Card:
+	href str   # "" for a card that is not a link
+	label str
+	lines str
+	thumb str   # its picture's path from the page, "" for none
+	note str
+
+# each project's picture in projects/site/thumbs, by its README name
+pub thumbs = {
+	"Engine": "engine",
+	"Mario 64": "mario",
+	"Ragnarok": "ragnarok",
+	"Minecraft": "minecraft",
+	"FireRed": "firered",
+	"Excel 1.00": "excel1",
+	"Skate 3": "skate3",
+	"Skyrim": "skyrim",
+	"Donkey Kong Country": "dkc",
+	"Lemmings": "lemmings",
+	"Prince of Persia": "pop",
+	"ZapX": "zapx"
+}
+
+# a README cell: plain text, or a link
+fn card(link str, lines str, words Words):
+	mid = linkSplit(link)
+	label = link[1..mid ?? 1] if mid != none else link
+	shown = words.cellNames.get(label) ?? label
+	target = link[(mid ?? 0) + 2..len - 1] if mid != none else ""
+	# the README's links are to the repository's dirs
+	href = target.copy() if target.isEmpty or target.startsWith("https:")
+		else "{repoUrl}/tree/main/{target}"
+	thumb = thumbs.get(label) ?? ""
+	Card(
+		href,
+		label = shown.copy(),
+		lines = "{words.number(lines)} {words.linesWord}",
+		thumb = "" if thumb.isEmpty else "../thumbs/{thumb}.jpg",
+		note = (words.highlights.get(label) ?? "").copy()
+	)
+
+pub fn cards(words Words, source readme.Readme) Card[]:
+	found = []
+	for t in source.tables.filter(.name == "built"):
+		for r in t.rows[1..]:
+			found.push(card(r[0], r[1], words))
+	found

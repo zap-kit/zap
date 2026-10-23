@@ -1,0 +1,8 @@
+[package]
+name = "revcomp"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+memchr = "2.8.3"
+rayon = "1.12.0"
