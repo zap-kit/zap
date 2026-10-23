@@ -213,7 +213,11 @@ test "a program that dies without a summary fails its file by name, the summary 
 	dies += "test \"two\":\n\titems i64[] = []\n\texpect items[5] == 0\n"
 	dies += "test \"three\":\n\texpect true\ntest \"four\":\n\texpect true\n"
 	said = passingAndSays("dies", dies)
-	print(said.filter(.startsWith("FAIL") or .startsWith("failed files") or .startsWith("== ")).join("\n"))
+	print(
+		said
+			.filter(.startsWith("FAIL") or .startsWith("failed files") or .startsWith("== "))
+			.join("\n")
+	)
 	prints """
 		FAIL d/b.zap: the tests ended without a summary (exit code 3)
 		failed files: d/b.zap
