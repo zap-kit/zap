@@ -55,11 +55,11 @@ fn compilerAndRuntimeFiles():
 # The words in a variable's list that no declaration of the kinds names end the build, the words
 # listed: a misspelt word would otherwise say nothing. They are looked for in the compiler, the
 # runtime and the program's own modules, then in everything `zap doc environment` lists (a word of
-# an engine program set for a run of another). A zap whose runtime is a copy without the compiler's
-# sources beside it (build/base's, which reads build/runtime) cannot tell its own words, and checks none.
+# an engine program set for a run of another). A zap with no copy of these compiler sources beside its runtime
+# (build/base's, which reads build/runtime, or a test's) cannot tell its own words, and checks none.
 fn checkWords(prog Program, variable EnvVariable, kinds str[]):
 	given = variable.value() ?? return
-	if not fs.exists(compilerDir()): return
+	if not fs.exists("{compilerDir()}/driver/environment.zap"): return
 	files = compilerAndRuntimeFiles()
 	for d in prog.decls:
 		f = prog.nodes[d].file()
